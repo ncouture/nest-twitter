@@ -70,10 +70,10 @@ class NestActor(nestToken: String, firebaseURL: String) extends Actor {
 
   def receive = {
     case e:ETA => {
+      setEta(e.copy(acked = true))
       if (!e.acked) {
         context.parent ! ETAAck(e)
       }
-      setEta(e.copy(acked = true))
     }
     case s: DataSnapshot => {
       try {
