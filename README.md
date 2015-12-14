@@ -13,21 +13,34 @@ Copy `src/main/resources/credentials-sample.txt` to `src/main/resources/credenti
 
 ## Building
 
-Builds are done with [Maven][maven] which is available on most platforms. You can compile the code by running:
+Building is done with [Sbt][sbt] which is available on most platforms.
+
+``` sh
+sbt compile
+```
+
+
+Alternatively you can build with [Maven][maven]. The compilation task in this case is done by running:
 
 ``` sh
 mvn compile
 ```
 
-The `pom.xml` file in the root is a Maven project definition and can be opened directly as a project by most Java IDEs.
+You can edit either `build.sbt` or `pom.xml` files in the root of the project in most Java IDEs.
 
 ## Running
 
 After you've compiled you can run the application by running the following:
 
 ``` sh
+sbt run
+```
+
+...or if you use maven:
+``` sh
 mvn exec:java -Dexec.mainClass=com.nestlabs.twest.Main
 ```
+
 
 Assuming your config is set up (as described earlier) you should see messages logged to standard output.
 
@@ -41,6 +54,7 @@ See [CONTRIBUTING](CONTRIBUTING.md) for more information on how to get started.
 
 Apache 2.0 - See [LICENSE](LICENSE) for more information.
 
+[sbt]: http://scala-sbt.org/
 [maven]: http://maven.apache.org/
 [twitter-keys]: https://dev.twitter.com
 [nest-keys]: https://developer.nest.com
