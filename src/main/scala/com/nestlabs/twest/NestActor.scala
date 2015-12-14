@@ -20,7 +20,6 @@ import akka.actor.{Props, Actor}
 import com.firebase.client.{DataSnapshot, FirebaseError, ValueEventListener, Firebase}
 import com.firebase.client.Firebase.{CompletionListener, AuthListener}
 import scala.collection.mutable.HashMap
-import scala.collection.JavaConversions._
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -78,6 +77,8 @@ class NestActor(nestToken: String, firebaseURL: String) extends Actor {
     }
     case s: DataSnapshot => {
       try {
+        import scala.collection.JavaConversions._
+
         // this looks scary, but because processing is single threaded here we're ok
         structMap.clear()
         // process structure specific data
@@ -184,13 +185,15 @@ class NestActor(nestToken: String, firebaseURL: String) extends Actor {
         // only set eta if the structure is away
         if (structureStates(structName).contains("away")) {
           val etaRef = fb.child("structures").child(structId).child("eta")
-          val jmap = new java.util.HashMap[String, Any]()
-          val arrival = System.currentTimeMillis() + eta.eta * 1000 * 60
-          jmap.put("trip_id", eta.tripID)
-          jmap.put("estimated_arrival_window_begin", arrival)
-          jmap.put("estimated_arrival_window_end", arrival)
-          println("setting eta " + jmap)
-          etaRef.setValue(jmap, new CompletionListener {
+          val arrival = (System.currentTimeMillis() + eta.eta * 1000 * 60).toString
+          val m = Map (
+            "trip_id" -> eta.tripID,
+            "estimated_arrival_window_begin" -> arrival,
+            "estimated_arrival_window_end"  -> arrival
+          )
+          println("setting eta " + m)
+          import scala.collection.JavaConversions.mapAsJavaMap
+          etaRef.setValue(mapAsJavaMap(m), new CompletionListener {
             def onComplete(err: FirebaseError, fb: Firebase) = {
               if (err != null) {
                 println("completed with err=%s-%s, fb=%s".format(err.getCode, err.getMessage, fb))
