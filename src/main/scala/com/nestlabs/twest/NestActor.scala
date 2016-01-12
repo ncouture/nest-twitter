@@ -203,7 +203,7 @@ class NestActor(nestToken: String, firebaseURL: String) extends Actor {
           // this is not a pattern that should be used in production.
           // you should be getting a stream of estimates from another source so that Nest can make
           // reliable predictions about when somebody is arriving.
-          // see https://developer.nest.com/documentation/eta-guide for more details.
+          // see https://developer.nest.com/documentation/cloud/eta-guide for more details.
           if (eta.eta > 10) {
             context.system.scheduler.scheduleOnce(61 seconds, self, eta.copy(eta = eta.eta - 1))
           }
